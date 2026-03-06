@@ -1,0 +1,27 @@
+{
+  "name": "wein",
+  "version": "1.0.0",
+  "description": "Weinregal-Verwaltung – eine Web-App zur Verwaltung des eigenen Weinregals",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node --test test/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HDnst95/wein.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/HDnst95/wein/issues"
+  },
+  "homepage": "https://github.com/HDnst95/wein#readme",
+  "dependencies": {
+    "better-sqlite3": "^12.6.2",
+    "express": "^5.2.1",
+    "express-rate-limit": "^8.3.0"
+  }
+}
