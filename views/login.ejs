@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Anmeldung - Weinregal Verwaltung</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .container {
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      overflow: hidden;
+      width: 100%;
+      max-width: 400px;
+    }
+
+    .login-header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 30px;
+      text-align: center;
+    }
+
+    .login-header h1 {
+      font-size: 28px;
+      margin-bottom: 5px;
+    }
+
+    .login-header p {
+      opacity: 0.9;
+      font-size: 14px;
+    }
+
+    .login-form {
+      padding: 30px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      color: #333;
+      font-weight: 500;
+    }
+
+    input[type="email"],
+    input[type="password"],
+    input[type="text"] {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-size: 14px;
+      transition: border-color 0.3s;
+    }
+
+    input[type="email"]:focus,
+    input[type="password"]:focus,
+    input[type="text"]:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+
+    .button-group {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    button {
+      flex: 1;
+      padding: 12px;
+      border: none;
+      border-radius: 5px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .btn-login {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+
+    .btn-login:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-register {
+      background: #f0f0f0;
+      color: #333;
+    }
+
+    .btn-register:hover {
+      background: #e0e0e0;
+    }
+
+    .message {
+      padding: 12px;
+      border-radius: 5px;
+      margin-bottom: 20px;
+      display: none;
+    }
+
+    .message.error {
+      background: #fee;
+      color: #c33;
+      border: 1px solid #fcc;
+      display: block;
+    }
+
+    .message.success {
+      background: #efe;
+      color: #3c3;
+      border: 1px solid #cfc;
+      display: block;
+    }
+
+    .register-form {
+      display: none;
+    }
+
+    .toggle-form {
+      text-align: center;
+      color: #666;
+      font-size: 14px;
+    }
+
+    .toggle-form a {
+      color: #667eea;
+      cursor: pointer;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="login-header">
+      <h1>🍷 Weinregal</h1>
+      <p>Verwaltung</p>
+    </div>
+
+    <div class="login-form">
+      <!-- Login Form -->
+      <div id="loginForm">
+        <div class="message" id="loginMessage"></div>
+        
+        <form onsubmit="handleLogin(event)">
+          <div class="form-group">
+            <label for="loginEmail">E-Mail-Adresse</label>
+            <input type="email" id="loginEmail" name="email" required>
+          </div>
+          <div class="form-group">
+            <label for="loginPassword">Passwort</label>
+            <input type="password" id="loginPassword" name="password" required>
+          </div>
+          <div class="button-group">
+            <button type="submit" class="btn-login">Anmelden</button>
+            <button type="button" class="btn-register" onclick="toggleForm()">Registrieren</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Register Form -->
+      <div id="registerForm" class="register-form">
+        <div class="message" id="registerMessage"></div>
+        
+        <form onsubmit="handleRegister(event)">
+          <div class="form-group">
+            <label for="registerName">Vollständiger Name</label>
+            <input type="text" id="registerName" name="fullname" required>
+          </div>
+          <div class="form-group">
+            <label for="registerEmail">E-Mail-Adresse</label>
+            <input type="email" id="registerEmail" name="email" required>
+          </div>
+          <div class="form-group">
+            <label for="registerPassword">Passwort</label>
+            <input type="password" id="registerPassword" name="password" required>
+          </div>
+          <div class="button-group">
+            <button type="submit" class="btn-login">Registrieren</button>
+            <button type="button" class="btn-register" onclick="toggleForm()">Zurück</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="toggle-form" id="toggleInfo">
+        Noch kein Konto? <a onclick="toggleForm()">Jetzt registrieren</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function toggleForm() {
+      const loginForm = document.getElementById('loginForm');
+      const registerForm = document.getElementById('registerForm');
+      const toggleInfo = document.getElementById('toggleInfo');
+
+      // Use getComputedStyle to get actual display values (including CSS)
+      const loginVisible = window.getComputedStyle(loginForm).display !== 'none';
+      const registerVisible = window.getComputedStyle(registerForm).display !== 'none';
+      
+      loginForm.style.display = loginVisible ? 'none' : 'block';
+      registerForm.style.display = registerVisible ? 'none' : 'block';
+      toggleInfo.style.display = toggleInfo.style.display === 'none' ? 'block' : 'none';
+    }
+
+    function showMessage(elementId, message, isError = true) {
+      const messageEl = document.getElementById(elementId);
+      messageEl.textContent = message;
+      messageEl.className = `message ${isError ? 'error' : 'success'}`;
+    }
+
+    async function handleLogin(e) {
+      e.preventDefault();
+      const email = document.getElementById('loginEmail').value;
+      const password = document.getElementById('loginPassword').value;
+
+      try {
+        const response = await fetch('/api/auth/login', {
+          method: 'POST',
+          credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          showMessage('loginMessage', data.message, false);
+          setTimeout(() => window.location.href = '/wines', 1500);
+        } else {
+          showMessage('loginMessage', data.message);
+        }
+      } catch (error) {
+        showMessage('loginMessage', 'Ein Fehler ist aufgetreten');
+      }
+    }
+
+    async function handleRegister(e) {
+      e.preventDefault();
+      const fullname = document.getElementById('registerName').value.trim();
+      const email = document.getElementById('registerEmail').value.trim();
+      const password = document.getElementById('registerPassword').value;
+
+      // Validation
+      if (!fullname || !email || !password) {
+        showMessage('registerMessage', 'Bitte alle Felder ausfüllen');
+        return;
+      }
+
+      if (password.length < 6) {
+        showMessage('registerMessage', 'Passwort muss mindestens 6 Zeichen lang sein');
+        return;
+      }
+
+      try {
+        console.log('Registrierung versucht für:', email);
+        const response = await fetch('/api/auth/register', {
+          method: 'POST',
+          credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password, fullname })
+        });
+
+        console.log('Response Status:', response.status);
+        const data = await response.json();
+        console.log('Response Data:', data);
+
+        if (response.ok) {
+          showMessage('registerMessage', data.message, false);
+          // Wait a bit longer before redirecting to ensure session is set
+          setTimeout(() => {
+            console.log('Weitergeleitet zu /wines');
+            window.location.href = '/wines';
+          }, 2000);
+        } else {
+          showMessage('registerMessage', data.message || 'Registrierung fehlgeschlagen');
+        }
+      } catch (error) {
+        console.error('Register Error:', error);
+        showMessage('registerMessage', 'Netzwerkfehler: ' + error.message);
+      }
+    }
+  </script>
+</body>
+</html>
