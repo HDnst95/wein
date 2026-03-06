@@ -4,57 +4,31 @@
 
 ### Schritt 1: Abhängigkeiten installieren
 ```bash
+git clone https://github.com/HDnst95/wein.git
+cd wein
 npm install
 ```
 
 Dieser Befehl installiert alle erforderlichen Node.js-Module.
 
-### Schritt 2: PostgreSQL Datenbank einrichten
-
-Öffnen Sie ein Terminal/Console und verbinden Sie sich mit PostgreSQL:
-
-```bash
-psql -U postgres -h localhost
-```
-
-Führen Sie dann folgende Befehle aus:
-
-```sql
-CREATE DATABASE weinregal;
-CREATE USER weinadmin WITH PASSWORD 'postgres123';
-ALTER ROLE weinadmin WITH SUPERUSER;
-\c weinregal
-\i database/schema.sql
-\q
-```
-
-Oder schneller: Navigieren Sie zum Projektordner und führen aus:
-```bash
-psql -U postgres -d weinregal -f database/schema.sql
-```
-
-### Schritt 3: Konfigurationsdatei erstellen
+### Schritt 2: Konfigurationsdatei erstellen
 
 ```bash
 # .env-Datei erstellen (kopieren Sie .env.example)
 cp .env.example .env
 ```
 
-Bearbeiten Sie die `.env` Datei mit Ihren Datenbank-Zugangsdaten:
+Bearbeiten Sie die `.env` Datei:
 
 ```env
-DB_HOST=localhost
-DB_PORT=5432
-DB_NAME=weinregal
-DB_USER=weinadmin
-DB_PASSWORD=postgres123
 SERVER_PORT=3000
 NODE_ENV=development
-JWT_SECRET=my-secret-key-123
-SESSION_SECRET=session-secret-456
+SESSION_SECRET=my-session-secret-123
 ```
 
-### Schritt 4: Server starten
+**Wichtig:** Die SQLite-Datenbank wird beim ersten Start automatisch erstellt! Sie müssen NICHTS manuell initialisieren.
+
+### Schritt 3: Server starten
 
 **Für Entwicklung (mit automatischem Reload bei Änderungen):**
 ```bash
@@ -68,11 +42,11 @@ npm start
 
 Der Server startet auf **http://localhost:3000**
 
-### Schritt 5: Erste Anmeldung testen
+### Schritt 4: Erste Anmeldung testen
 
 1. Browser öffnen und `http://localhost:3000` aufrufen
-2. Auf "Registrieren" klicken
-3. Neuen Benutzer erstellen (z.B. Max Mustermann / max@example.com / password123)
+2. Auf \"Jetzt registrieren\" klicken
+3. Neuen Benutzer erstellen (z.B. Max Mustermann / max@example.com / passwort123)
 4. Anmelden
 5. Weine hinzufügen und verwalten 🍷
 
@@ -81,81 +55,65 @@ Der Server startet auf **http://localhost:3000**
 ```
 wein/
 ├── config/
-│   └── database.js          # PostgreSQL-Verbindungskonfiguration
+│   └── database.js           # SQLite-Verbindungskonfiguration
 ├── routes/
-│   ├── auth.js              # Login/Register/Logout API
-│   ├── wines.js             # Wein-CRUD & Suche
-│   └── users.js             # Benutzerprofil-API
+│   ├── auth.js               # Login/Register/Logout API
+│   ├── wines.js              # Wein-CRUD & Suche/Filter
+│   └── users.js              # Benutzerprofil-API
 ├── public/
-│   ├── css/                 # Später: Custom CSS
-│   ├── js/                  # Später: Custom JavaScript
-│   └── uploads/             # Hochgeladene Weinbilder
+│   ├── css/                  # Später: Custom CSS
+│   ├── js/                   # Später: Custom JavaScript
+│   └── uploads/              # Hochgeladene Weinbilder
 ├── views/
-│   ├── login.ejs            # Login/Register-Seite
-│   ├── wines.ejs            # Hauptseite -Wein-Dashboard
-│   └── 404.ejs              # Fehlerseite
+│   ├── login.ejs             # Login/Register-Seite
+│   ├── wines.ejs             # Hauptseite - Wein-Dashboard
+│   └── 404.ejs               # Fehlerseite
 ├── database/
-│   └── schema.sql           # Datenbank-Schema (Tabellen)
-├── server.js                # Express-Applikation Hauptdatei
-├── package.json             # Node.js-Abhängigkeiten
-└── .env                     # Konfiguration (wird nicht getracked)
+│   └── schema.sql            # Datenbank-Schema (Tabellen)
+├── weinregal.db              # SQLite Datenbank (wird automatisch erstellt)
+├── server.js                 # Express-Applikation Hauptdatei
+├── package.json              # Node.js-Abhängigkeiten
+├── .env                      # Konfiguration (wird nicht getracked)
+└── .env.example              # Konfigurationsvorlage
 ```
 
 ## 🛠 Häufige Probleme & Lösungen
 
-### Problem: "ECONNREFUSED" - PostgreSQL läuft nicht
-**Lösung:** Stellen Sie sicher, dass PostgreSQL läuft:
+### Problem: "EADDRINUSE" - Port 3000 wird bereits verwendet
+**Lösung:** Wechseln Sie den Port:
 ```bash
-# Windows
-# Prüfen Sie die Windows Services oder starten Sie PostgreSQL Installer
-
-# macOS
-brew services start postgresql
-
-# Linux
-sudo systemctl start postgresql
+# In .env ändern:
+SERVER_PORT=3001
 ```
 
-### Problem: "password authentication failed"
-**Lösung:** Überprüfen Sie die Datenbankanmeldedaten in der `.env` Datei
+Oder stoppen Sie die andere Anwendung, die Port 3000 verwendet.
 
-### Problem: 404 - Module nicht gefunden
+### Problem: "Cannot find module" - Module nicht gefunden
 **Lösung:** Führen Sie `npm install` aus
 
-### Problem: Port 3000 wird bereits verwendet
-**Lösung:** Ändern Sie `SERVER_PORT` in der `.env` oder stoppen Sie die andere Anwendung
+### Problem: Datenbankdatei nicht erstellt
+**Lösung:** Starten Sie den Server mit `npm run dev` - die Datenbank wird automatisch beim ersten Start erstellt
 
-## 🧪 Manuelles Testen der API (Optional)
+### Problem: Login funktioniert nicht
+**Lösung:** 
+1. Öffnen Sie F12 Developer Console (Browser)
+2. Vergewissern Sie sich, dass Cookies aktiviert sind
+3. Schauen Sie in der Console nach Fehlermeldungen
+4. Stellen Sie sicher, dass der Server läuft (`http://localhost:3000` sollte zugänglich sein)
 
-Mit `curl` oder [Postman](https://www.postman.com/) können Sie die API testen:
+## 👨‍💼 Weitere Informationen
 
-```bash
-# Benutzer registrieren
-curl -X POST http://localhost:3000/api/auth/register \
-  -H "Content-Type: application/json" \
-  -d '{"email":"test@example.com","password":"pass123","fullname":"Test User"}'
-
-# Anmelden
-curl -X POST http://localhost:3000/api/auth/login \
-  -H "Content-Type: application/json" \
-  -d '{"email":"test@example.com","password":"pass123"}'
-```
-
-## 📦 Nächste Schritte / Erweiterungen
-
-1. **Weitere UI-Verbesserungen:** Responsive Design, dunkler Modus
-2. **Bewertungssystem:** 1-5 Sterne, Kommentare
-3. **Kaufs-/Verkaufshistorie:** Chronik von Käufen und Verkäufen
-4. **Statistiken:** Grafiken, Insights über Ihre Sammlung
-5. **PDF-Export:** Drucken Ihrer Weinkliste
-6. **Sharing:** Teilen Sie Ihre Sammlung mit Freunden
-7. **Mobile App:** React Native oder Flutter Mobilversion
-
-## 📞 Support & Dokumentation
-
-- **Offizielle Express-Docs:** http://expressjs.com/
-- **PostgreSQL Docs:** https://www.postgresql.org/docs/
+- **Express-Docs:** http://expressjs.com/
 - **Node.js Docs:** https://nodejs.org/docs/
+- **SQLite Docs:** https://www.sqlite.org/docs.html
+- **DB Browser for SQLite:** https://sqlitebrowser.org/ (GUI zum Anschauen der Datenbank)
+
+## ✏️ Nächste Schritte
+
+1. **Weine verwalten:** Mehrere Weine hinzufügen und filtern
+2. **Fotos hochladen:** Ein Foto zu einem Wein hinzufügen
+3. **Suchfunktion testen:** Nach Region, Farbe oder Rebsorte filtern
+4. **Profil bearbeiten:** Hauptmenü oben rechts → Profiländerungen vornehmen
 
 ---
 

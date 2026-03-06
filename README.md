@@ -18,41 +18,28 @@ Eine webbasierte Anwendung zur Verwaltung Ihres persönlichen Weinbestandes mit 
 
 - **Frontend:** HTML5, CSS3, JavaScript (Vanilla)
 - **Backend:** Node.js, Express.js
-- **Datenbank:** PostgreSQL
+- **Datenbank:** SQLite3 (dateibasiert, keine externe DB nötig)
 - **Authentifizierung:** bcryptjs + Express Sessions
 - **File Upload:** Multer
+- **Environment:** dotenv für Konfiguration
 
 ## Voraussetzungen
 
 - [Node.js](https://nodejs.org/) (v14+)
-- [PostgreSQL](https://www.postgresql.org/) (v12+)
 - npm oder yarn
+- (Keine externe Datenbank nötig - SQLite wird automatisch erstellt)
 
 ## Installation & Setup
 
-### 1. Abhängigkeiten installieren
+### 1. Repository klonen und Abhängigkeiten installieren
 
 ```bash
+git clone https://github.com/HDnst95/wein.git
+cd wein
 npm install
 ```
 
-### 2. Datenbank erstellen
-
-```bash
-# PostgreSQL starten
-# Datenbank und Benutzer erstellen:
-
-psql -U postgres
-
-CREATE DATABASE weinregal;
-CREATE USER weinadmin WITH PASSWORD 'your_password';
-ALTER ROLE weinadmin WITH SUPERUSER;
-
-\c weinregal
-\i database/schema.sql
-```
-
-### 3. Umgebungsvariablen konfigurieren
+### 2. Umgebungsvariablen konfigurieren
 
 ```bash
 # .env.example zu .env kopieren und anpassen
@@ -61,18 +48,14 @@ cp .env.example .env
 
 Dann bearbeiten Sie `.env`:
 ```
-DB_HOST=localhost
-DB_PORT=5432
-DB_NAME=weinregal
-DB_USER=weinadmin
-DB_PASSWORD=your_password
 SERVER_PORT=3000
 NODE_ENV=development
-JWT_SECRET=your_secret_key_here
 SESSION_SECRET=your_session_secret_here
 ```
 
-### 4. Server starten
+**Hinweis:** Die SQLite-Datenbank (`weinregal.db`) wird beim ersten Start automatisch erstellt und mit dem Schema initialisiert.
+
+### 3. Server starten
 
 **Development (mit Autoreload):**
 ```bash
@@ -85,6 +68,16 @@ npm start
 ```
 
 Der Server läuft dann unter: **http://localhost:3000**
+
+## Schnelleinstieg (5 Minuten)
+
+```bash
+npm install
+cp .env.example .env
+npm run dev
+```
+
+Browser öffnen → `http://localhost:3000` → Registrieren → Wein hinzufügen 🍷
 
 ## Projektstruktur
 
@@ -142,8 +135,8 @@ heroku create your-app-name
 git push heroku main
 ```
 
-### Option 2: DigitalOcean / Linode
-1. Droplet mit Node.js/PostgreSQL erstellen
+### Option 2: DigitalOcean / Linode / AWS
+1. Droplet mit Node.js erstellen
 2. Repository klonen
 3. `.env` mit Produktionswerten konfigurieren
 4. Mit PM2 oder Systemd als Service starten
@@ -165,26 +158,31 @@ pm2 save
 
 ### Einen neuen Benutzer testen
 1. http://localhost:3000 öffnen
-2. "Registrieren" Formular ausfüllen
-3. Mit den Anmeldedaten anmelden
-4. Weine hinzufügen und verwalten
+2. "Jetzt registrieren" klicken
+3. Vollständiger Name, E-Mail und Passwort eingeben
+4. Mit den Anmeldedaten anmelden
+5. Weine hinzufügen und verwalten
 
 ### Datenbank Debugging
-```bash
-psql weinregal
-SELECT * FROM users;
-SELECT * FROM wines WHERE user_id = 1;
-```
+Die SQLite-Datenbank wird als `weinregal.db` im Projektroot gespeichert. Mit einem Tool wie [DB Browser for SQLite](https://sqlitebrowser.org/) können Sie die Daten direkt ansehen und bearbeiten.
 
-## Verbesserungen für Zukunft
+## Roadmap für zukünftige Versionen
 
-- [ ] Bewertungssystem (1-5 Sterne)
-- [ ] Erweiterte Kaufs- und Verkaufshistorie
+**v1.1.0** (geplant)
+- [ ] Bewertungssystem (1-5 Sterne) UI
+- [ ] Kaufs- und Verkaufshistorie Tracking UI
+- [ ] Erweiterte Filter und Sortieroptionen
+- [ ] Single-Page App mit schnelleren Übergängen
+
+**v1.2.0+**
 - [ ] Weinempfehlungen basierend auf Bewertungen
 - [ ] Export zu CSV/PDF
-- [ ] Mobile App (React Native/Flutter)
+- [ ] Statistiken und Dashboards (Wertentwicklung, Top-bewertete Weine)
+- [ ] Dark Mode
 - [ ] Docker-Container
-- [ ] Unit Tests
+- [ ] Unit & Integration Tests
+- [ ] Mobile-optimierte Version
+- [ ] REST API Dokumentation (Swagger/OpenAPI)
 
 ## Lizenz
 
